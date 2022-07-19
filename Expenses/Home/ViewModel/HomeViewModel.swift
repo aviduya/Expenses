@@ -12,41 +12,14 @@ class HomeViewModel: ObservableObject {
     
     @Published var homeMessage: String = ""
     
-    //TODO: Have Dispatchque allocated to main thread when refactoring dataHandler for HomeView()
     
-    let dataManager = CoreDataHandler.shared
-
-    
-    init() {
-      
-        generateMessage()
+    var areTransactionsEmpty: Bool {
         
-    }
-    
-    func generateMessage() -> String {
-        
-        let hour = Calendar.current.component(.hour, from: Date())
-        let newDay = 0
-        let noon = 12
-        let sunset = 18
-        let midnight = 24
-        
-
-        switch hour {
-            
-        case newDay ..< noon:
-            homeMessage = "Good Morning!"
-        case noon ..< sunset:
-            homeMessage = "Good Afternoon!"
-        case sunset ..< midnight:
-            homeMessage = "Good Evening!"
-            
-        default:
-            homeMessage = "Hello!"
+        if dataManager.all.isEmpty {
+            return true
+        } else {
+            return false
         }
-        
-        return homeMessage
-        
         
     }
     
@@ -73,6 +46,23 @@ class HomeViewModel: ObservableObject {
             }
         }
         return total
+    }
+    
+    var differenceBool: Bool {
+        
+        let value = diffPercentage
+        
+        switch value {
+        case let value where value > 0:
+            return true
+        case let value where value < 0:
+            return false
+            
+        default:
+            return true
+        }
+        
+        
     }
     
     var diffPercentage: Double {
@@ -105,5 +95,41 @@ class HomeViewModel: ObservableObject {
         
         return arry.filtered().first ?? "No Payment Recorded"
     }
+    
+    //TODO: Have Dispatchque allocated to main thread when refactoring dataHandler for HomeView()
+    
+    let dataManager = CoreDataHandler.shared
+
+    
+    init() {
+      
+        generateMessage()
+        
+    }
+    
+    func generateMessage() {
+        
+        let hour = Calendar.current.component(.hour, from: Date())
+        let newDay = 0
+        let noon = 12
+        let sunset = 18
+        let midnight = 24
+        
+
+        switch hour {
+            
+        case newDay ..< noon:
+            homeMessage = "Good Morning!"
+        case noon ..< sunset:
+            homeMessage = "Good Afternoon!"
+        case sunset ..< midnight:
+            homeMessage = "Good Evening!"
+            
+        default:
+            homeMessage = "Hello!"
+        }
+    }
+    
+    
 }
 

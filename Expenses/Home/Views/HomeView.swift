@@ -15,6 +15,8 @@ struct HomeView: View {
     
     @State var activeSheet: ActiveView?
     
+    let specifiedToTenths = "%.2f"
+    
     var body: some View {
         
         // Most of the View components are extracted into HomeExtensions.swift for clarity.
@@ -48,7 +50,7 @@ struct HomeView: View {
         /// This sheet is responsible for navigation to all of the pages that the user can navigate from the HomeView()
         /// When dismissed it calls upon the CoreDataHandler() method to fetch and appends all transactions to their respective formats.
         
-        .sheet(item: $activeSheet, onDismiss: { }) { item in
+        .sheet(item: $activeSheet) { item in
             switch item {
             case .all:
                 AllTransacitonsView()

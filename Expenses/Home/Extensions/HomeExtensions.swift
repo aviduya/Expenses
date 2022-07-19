@@ -12,6 +12,8 @@ import SwiftUI
 
 extension HomeView {
     
+    
+    
     //MARK: List view of 5 Recent transactions.
     
     var HomeList: some View {
@@ -21,7 +23,7 @@ extension HomeView {
                         RowView(
                             entity: data,
                             entities: $dm.all,
-                            onDelete: dm.deleteTransactions(_:),
+                            onDelete: dm.deleteTransactions,
                             item: data.name ?? "",
                             date: data.date ?? Date(),
                             amount: data.amount,
@@ -34,17 +36,17 @@ extension HomeView {
     //MARK: Navigation header responsible for navigating to AllTransactionsView()
     
     var HomeNavigation: some View {
+        
         HStack {
+            
             Text("5 Most recent transactions")
                 .bold()
                 .opacity(0.63)
+            
             Spacer()
-            Button {
-                activeSheet = .all
-                settings.haptic(style: .medium)
-            } label: {
+            
+            Button { activeSheet = .all } label: {
                 HStack {
-                    
                     Text("View All")
                     Image(systemName: "chevron.down")
                 }
@@ -61,52 +63,44 @@ extension HomeView {
             VStack(alignment: .leading) {
                 
                 Text("Spent Today")
-                    .font(.system(size: 30, weight: .regular, design: .default))
+                    .font(.system(size: 30))
                     .opacity(0.5)
                 
             }
+            
             HStack(alignment: .center) {
-                Text("$\(vm.spentToday, specifier: "%.2f")")
-                    .redacted(reason: dm.all.isEmpty ? .placeholder : [])
-                    .shimmering(active: dm.all.isEmpty)
-                    .font(.system(size: 35, weight: .regular, design: .rounded))
+                
+                Text("$\(vm.spentToday, specifier: specifiedToTenths)")
+                    .headlineStyle(empty: vm.areTransactionsEmpty)
+                
                 Spacer()
-                if vm.diffPercentage > 0 {
+                
+                
+                HStack {
+                    Image(systemName: vm.differenceBool ? "arrow.up.right": "arrow.down.right")
+                        .foregroundColor(vm.differenceBool ? .green : .red)
                     
-                    HStack {
-                        Image(systemName: "arrow.up.right")
-                            .foregroundColor(Color.red)
-                        Text("\(vm.diffPercentage.rounded(), specifier: "%2.f")%")
-                    }
-                    .font(.system(size: 20, weight: .bold, design: .default))
-                } else if vm.diffPercentage < 0 {
-                    HStack {
-                        Image(systemName: "arrow.down.right")
-                            .foregroundColor(Color.green)
-                        Text("\(vm.diffPercentage.rounded(), specifier: "%2.f")%" )
-                        
-                    }
-                    .font(.system(size: 20, weight: .bold, design: .default))
+                    Text("\(vm.diffPercentage.rounded(), specifier: specifiedToTenths)%")
+                    
                 }
+                .font(.system(size: 20, weight: .bold, design: .default))
+                
 
             }
+            
             VStack(alignment: .leading) {
                 Text("Top Category")
                     .font(.headline)
                     .opacity(0.5)
                 Text(vm.topCat)
-                    .redacted(reason: dm.all.isEmpty ? .placeholder : [])
-                    .shimmering(active: dm.all.isEmpty)
-                    .font(Font.system(.largeTitle, design: .default).weight(.medium))
+                    .headlineStyle(empty: vm.areTransactionsEmpty)
             }
             VStack(alignment: .leading) {
                 Text("Most Used payment")
                     .font(.headline)
                     .opacity(0.5)
                 Text(vm.topPayment)
-                    .redacted(reason: dm.all.isEmpty ? .placeholder : [])
-                    .shimmering(active: dm.all.isEmpty)
-                    .font(Font.system(.largeTitle, design: .default).weight(.medium))
+                    .headlineStyle(empty: vm.areTransactionsEmpty)
                 
             }
         }
@@ -131,7 +125,9 @@ extension HomeView {
             } label: {
                 Image(systemName: "bolt.fill")
             }
+            
             Spacer()
+            
             Button(action: {
                 activeSheet = .add
                 settings.haptic(style: .heavy)
