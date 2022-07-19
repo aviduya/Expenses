@@ -10,38 +10,44 @@ import UIKit
 
 class HomeViewModel: ObservableObject {
     
+    @Published var homeMessage: String = ""
+    
     //TODO: Have Dispatchque allocated to main thread when refactoring dataHandler for HomeView()
     
     let dataManager = CoreDataHandler.shared
-    
-    
+
     
     init() {
       
+        generateMessage()
+        
     }
     
-    var greeting: String {
+    func generateMessage() -> String {
+        
         let hour = Calendar.current.component(.hour, from: Date())
         let newDay = 0
         let noon = 12
         let sunset = 18
         let midnight = 24
         
-        var message = ""
+
         switch hour {
             
         case newDay ..< noon:
-            message = "Good Morning!"
+            homeMessage = "Good Morning!"
         case noon ..< sunset:
-            message = "Good Afternoon!"
+            homeMessage = "Good Afternoon!"
         case sunset ..< midnight:
-            message = "Good Evening!"
+            homeMessage = "Good Evening!"
             
         default:
-            message = "Hello!"
+            homeMessage = "Hello!"
         }
         
-        return message
+        return homeMessage
+        
+        
     }
     
     var spentToday: Double {

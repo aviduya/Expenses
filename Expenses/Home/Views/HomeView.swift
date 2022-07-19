@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    
     @EnvironmentObject var settings: AppSettings
     @ObservedObject var vm = HomeViewModel()
     @StateObject var dm = CoreDataHandler.shared
@@ -24,7 +25,7 @@ struct HomeView: View {
                     .font(.body)
                     .bold()
                     .opacity(0.66)
-                Text(vm.greeting)
+                Text(vm.homeMessage)
                     .font(Font.system(.largeTitle, design: .default).weight(.bold))
                 
                 // This is responsible for checking if transactions are empty, if it is show the EmptyView()
